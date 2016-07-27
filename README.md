@@ -2,7 +2,9 @@
 Contains the necessary base html and javascript for confirm email and reset password in firebase projects.
 
 ## Step 1 - Create a fresh copy of this repo
-``git clone https://git.solidstategroup.com/kyle/firebase-project-starter.git && cd ./firebase-project-starter/ && rm -rf .git && git init``
+``git clone https://git.solidstategroup.com/kyle/firebase-project-starter.git && cd ./firebase-project-starter/ && rm -rf .git``
+
+** Add this folder to your project's source control **
 
 ## Step 2 - Create a new firebase project
 https://console.firebase.google.com/
@@ -20,3 +22,4 @@ Go to Hosting > Get started > Follow the instructions for hosting
 
 ## Step 6 - Use fireauth with project config
 For an example see https://git.solidstategroup.com/solidstategroup/ssg-frontend-boilerplate
+
