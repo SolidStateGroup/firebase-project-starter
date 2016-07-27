@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Confirm email</title>
+    <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.2/css/bootstrap.min.css">
+    <script type="text/javascript"
+            src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
+    <script>
+
+        var config = {
+            apiKey: 'AIzaSyCC-BTYL-DuOMt7hrK18Q-PhOM0FVpgpd8',
+            authDomain: 'project-4251246165915577329.firebaseapp.com',
+            databaseURL: 'https://project-4251246165915577329.firebaseio.com',
+            storageBucket: "p"
+        };
+
+        firebase.initializeApp(config);
+
+        function getParameterByName (name) {
+            var regexS = "[\\?&]" + name + "=([^&#]*)",
+                    regex = new RegExp(regexS),
+                    results = regex.exec(window.location.search);
+            if (results == null) {
+                return "";
+            } else {
+                return decodeURIComponent(results[1].replace(/\+/g, " "));
+            }
+        }
+
+        function resetPassword (newPassword) {
+            var oobCode = getParameterByName('oobCode');
+            return firebase.auth().confirmPasswordReset(oobCode, newPassword);
+        }
+
+        function confirmEmail () {
+            var oobCode = getParameterByName('oobCode');
+            return new Promise(function (resolve, reject) {
+                try {
+                    firebase.auth().checkActionCode(oobCode)
+                            .then(function (userInfo) {
+                                var email = userInfo.data.email;
+                                firebase.auth().applyActionCode(oobCode).then(function () {
+                                    var ref = firebase.database().ref("profiles");
+
+                                    //update profile with emailVerified: true
+                                    ref.orderByChild("email").equalTo(email).limitToFirst(1).once('value', function (snapshot) {
+                                        var key = Object.keys(snapshot.val())[0];
+                                        var ref = firebase.database().ref("profiles/" + key);
+                                        ref.update({ emailVerified: true });
+                                    });
+
+                                    resolve(email);
+                                });
+                            }, function (error) {
+                                reject(error.message);
+                            });
+                } catch (error) {
+                    $('#message').text(error);
+                }
+            });
+        }
+
+
+        $(document).ready(function () {
+            var mode = getParameterByName('mode');
+            // Initialize Firebase
+
+            switch (mode) {
+                case 'resetPassword': {
+                    $('#resetPassword form').on('submit', function (e) {
+                        e.preventDefault();
+                        resetPassword($('#password').val())
+                                .then(function() {
+                                    $('#reset-password-loaded')
+                                            .removeClass('hidden');
+                                    $('#reset-password-loading')
+                                            .removeClass('hidden');
+                                })
+                                .catch(function (err) {
+                                    alert(err);
+                                })
+                    });
+
+                    return $('#resetPassword').removeClass('hidden');
+                }
+                case 'confirmEmail': {
+                    confirmEmail()
+                            .then((emailAddress)=> {
+                                $('#confirm-loading')
+                                        .addClass('hidden');
+                                $('#confirm-loaded')
+                                        .removeClass('hidden');
+                            });
+
+                    return $('#confirmEmail').removeClass('hidden');
+                }
+            }
+
+        });
+    </script>
+</head>
+<body>
+
+<div class="container">
+    <!-- RESET PASSWORD -->
+    <div class="hidden" id="resetPassword">
+        <div id="reset-password-loading">
+            <h1>Reset Password</h1>
+            <form>
+                <div class="form-group">
+                    <label for="password" class="cols-sm-2 control-label">New Password</label>
+                    <div class="cols-sm-10">
+                        <div class="input-group">
+                            <input type="password" claass="form-control input" name="password" id="password"  placeholder="Enter your new password"/>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn">Submit</button>
+            </form>
+
+        </div>
+        <div class="hidden" id="reset-password-loaded">
+            Your password is now reset
+        </div>
+    </div>
+    <!-- CONFIRM EMAIL -->
+    <div class="hidden" id="confirmEmail">
+        <h1>Confirm Email</h1>
+        <div id="confirm-loading">
+            Confirming email
+        </div>
+        <div class="hidden" id="confirm-loaded">
+            Confirmed!
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
