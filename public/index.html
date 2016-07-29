@@ -10,11 +10,11 @@
     <script src="https://www.gstatic.com/firebasejs/3.2.0/firebase.js"></script>
     <script>
 
-        var config = {
-            apiKey: 'AIzaSyCC-BTYL-DuOMt7hrK18Q-PhOM0FVpgpd8',
-            authDomain: 'project-4251246165915577329.firebaseapp.com',
-            databaseURL: 'https://project-4251246165915577329.firebaseio.com',
-            storageBucket: "p"
+        var config =  {
+            apiKey: "AIzaSyDQxPURkT1MTYYbKHXUyhPnzTg6tJQJGzI",
+            authDomain: "my-great-project-6e6ea.firebaseapp.com",
+            databaseURL: "https://my-great-project-6e6ea.firebaseio.com",
+            storageBucket: "my-great-project-6e6ea.appspot.com",
         };
 
         firebase.initializeApp(config);
@@ -43,11 +43,13 @@
                             .then(function (userInfo) {
                                 var email = userInfo.data.email;
                                 firebase.auth().applyActionCode(oobCode).then(function () {
+                                    console.log("verified " + email);
                                     var ref = firebase.database().ref("profiles");
 
                                     //update profile with emailVerified: true
                                     ref.orderByChild("email").equalTo(email).limitToFirst(1).once('value', function (snapshot) {
                                         var key = Object.keys(snapshot.val())[0];
+                                        console.log("verifying " + key);
                                         var ref = firebase.database().ref("profiles/" + key);
                                         ref.update({ emailVerified: true });
                                     });
@@ -86,9 +88,9 @@
 
                     return $('#resetPassword').removeClass('hidden');
                 }
-                case 'confirmEmail': {
+                case 'verifyEmail': {
                     confirmEmail()
-                            .then((emailAddress)=> {
+                            .then(function(emailAddress) {
                                 $('#confirm-loading')
                                         .addClass('hidden');
                                 $('#confirm-loaded')
