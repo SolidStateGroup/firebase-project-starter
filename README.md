@@ -17,7 +17,7 @@ Go to Hosting > Get started > Follow the instructions for hosting
 
 **Select all defaults, make sure you select no when asked if you wish to overwrite index.html**
 
-## Step 5 - Set the email template action url, enable signin providers you wish to use
+# Step 5 - Set the email template action url (auth > email templates > customize action url in the bottom right of any of the templates) to your project url, enable signin providers you wish to use
 <img src="instructions_2.png"/>
 
 ## Step 6 - Use fireauth with project config
