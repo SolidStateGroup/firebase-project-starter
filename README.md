@@ -2,7 +2,7 @@
 Contains the necessary base html and javascript for confirm email and reset password in firebase projects.
 
 ## Step 1 - Create a fresh copy of this repo
-``git clone https://git.solidstategroup.com/solidstategroup/firebase-project-starter.git && cd ./firebase-project-starter/ && rm -rf .git``
+``git clone https://github.com/SolidStateGroup/firebase-project-starter.git && cd ./firebase-project-starter/ && rm -rf .git``
 
 ** Add this folder to your project's source control **
 
